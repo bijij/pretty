@@ -24,12 +24,21 @@ jobs:
       with:
         python-version: ${{ matrix.PYTHON_VERSION }}
 
+    - name: Set up Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: lts/*
+
     - name: Install dependencies
       run: |-
         python -m pip install --upgrade pip
         python -m pip install --upgrade setuptools wheel
-        python -m pip install --upgrade mypy
         python -m pip install --upgrade .
 
-    - name: Run MyPy
-      run: python -m mypy -v -p ${{ github.event.repository.name }}
+    - name: Install pyright
+      run: npm install -g pyright
+
+    - name: Run pyright
+      run: |-
+        pright ./pretty
+        pyright --verifytypes pretty --ignoreexternal
