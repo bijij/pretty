@@ -40,5 +40,5 @@ jobs:
 
     - name: Run pyright
       run: |-
-        pright ./pretty
+        pyright ./pretty
         pyright --verifytypes pretty --ignoreexternal
