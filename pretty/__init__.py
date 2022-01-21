@@ -1,20 +1,26 @@
-import collections
+from __future__ import annotations
+
 import sys
+from typing import NamedTuple
 
-from pretty import utils
-from pretty import traceback
-
+from pretty import traceback, utils
 
 __all__ = []
 
 
-_VersionInfo = collections.namedtuple("_VersionInfo", "major minor micro release serial")
+class _VersionInfo(NamedTuple):
+    major: int
+    minor: int
+    micro: int
+    release: str
+    serial: int
 
-version = "2.0.0a"
-version_info = _VersionInfo(2, 0, 0, "alpha", 0)
+
+version: str = "2.0.0a"
+version_info: _VersionInfo = _VersionInfo(2, 0, 0, "alpha", 0)
 
 
-def main():
+def main() -> None:
     # NOTE: This function is called at every Python startup. Its impact
     #       should thus be kept to a minimum.
     #
@@ -27,7 +33,7 @@ def main():
 
     theme = utils.environment_to_theme("PYTHONPRETTYTHEME", None)
 
-    if all or utils.environment_to_boolean("PYTHONPRETTYTRACEBACK", False):
+    if all is True or utils.environment_to_boolean("PYTHONPRETTYTRACEBACK", False):
         try:
             traceback.hook(theme=theme)
         except BaseException as e:

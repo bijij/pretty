@@ -1,12 +1,33 @@
+from __future__ import annotations
+
 import sys
 import traceback
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
-from pretty import utils
-from pretty.traceback.formatter import *
-from pretty.traceback.formatter import __all__ as _formatter__all__
+if TYPE_CHECKING:
+    from typing_extensions import ParamSpec
+
+from .formatter import *
+from .formatter import __all__ as _formatter__all__
+
+TBF = TypeVar("TBF", bound=TracebackFormatter)
+
+if TYPE_CHECKING:
+    P = ParamSpec("P")
 
 
-def hook(cls=None, **kwargs):
+@overload
+def hook(cls: None = ..., *args: Any, **kwargs: Any) -> PrettyTracebackFormatter:
+    ...
+
+
+@overload
+def hook(cls: Callable[P, TBF] = ..., *args: P.args, **kwargs: P.kwargs) -> TBF:
+    ...
+
+
+def hook(cls: Callable[P, TBF] = None, *args: P.args, **kwargs: P.kwargs) -> TBF | PrettyTracebackFormatter:
     """
     Hooks pretty.traceback into the current Python session.
 

@@ -1,8 +1,19 @@
+from __future__ import annotations
+
 import os
 import re
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, TypeVar
+
+T = TypeVar("T")
+
+if TYPE_CHECKING:
+    from typing_extensions import ParamSpec
+
+    P = ParamSpec("P")
 
 
-boolean_map = {
+boolean_map: dict[str, bool] = {
     "1": True,
     "true": True,
     "on": True,
@@ -18,7 +29,7 @@ boolean_map = {
 }
 
 
-def environment_to_boolean(name, default):
+def environment_to_boolean(name: str, default: T) -> bool | T:
     try:
         value = os.environ[name]
     except KeyError:
@@ -55,7 +66,7 @@ def environment_to_boolean(name, default):
 #       50    128;128;128   gray
 #       90    230;230;230   white
 #
-pretty_theme = {
+pretty_theme: dict[str, Any] = {
     # colorizing abstract syntax trees
     "ast_comment_sgr": ("38;2;179;255;179", "39"),
     "ast_delimiter_sgr": ("38;2;128;128;128", "39"),
@@ -82,7 +93,7 @@ pretty_theme = {
 }
 
 
-def environment_to_theme(name, default):
+def environment_to_theme(name: str, default: Any) -> Any:
     try:
         environment = os.environ[name]
     except KeyError:
@@ -121,8 +132,8 @@ def environment_to_theme(name, default):
         return theme
 
 
-def wrap(wrapped):
-    def decorator(wrapper):
+def wrap(wrapped: Callable[..., Any]) -> Callable[[Callable[P, T]], Callable[P, T]]:
+    def decorator(wrapper: Callable[P, T]) -> Callable[P, T]:
         wrapper.__doc__ = wrapped.__doc__
         wrapper.__name__ = wrapped.__name__
         wrapper.__qualname__ = wrapped.__qualname__
